@@ -1,19 +1,19 @@
-name: Build Bacakomik Alter APK
+lname: Build Bacakomik Alter APK
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
-      - master
 
 permissions:
   contents: read
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - name: Checkout repository
@@ -30,21 +30,37 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install project dependencies
+        run: npm install --legacy-peer-deps --no-audit --no-fund
 
-      - name: Build web app
+      - name: Install Capacitor
+        run: |
+          npm install --legacy-peer-deps @capacitor/core @capacitor/android @capacitor/cli --no-audit --no-fund
+
+      - name: Create Capacitor configuration
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.bacakomik.alter",
+            "appName": "Bacakomik Alter",
+            "webDir": "dist"
+          }
+          EOF
+
+      - name: Build web application
         run: npm run build
 
-      - name: Create Android project
+      - name: Add Android platform
         run: npx cap add android
 
       - name: Sync Android
         run: npx cap sync android
 
-      - name: Build APK
+      - name: Build debug APK
         working-directory: android
-        run: chmod +x gradlew && ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -52,3 +68,4 @@ jobs:
           name: bacakomik-alter-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 7
