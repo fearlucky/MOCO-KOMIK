@@ -1,4 +1,4 @@
-lname: Build Bacakomik Alter APK
+name: Build Bacakomik Alter APK
 
 on:
   workflow_dispatch:
