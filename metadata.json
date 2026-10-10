@@ -1,0 +1,6 @@
+{
+  "name": "Bacakomik Alter - Baca Manga & Manhwa Tanpa Iklan",
+  "description": "Aplikasi baca komik online manga, manhwa, dan manhua berbahasa Indonesia terlengkap, cepat, dan 100% bebas iklan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
